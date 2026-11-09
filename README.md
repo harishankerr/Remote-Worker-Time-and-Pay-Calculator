@@ -96,4 +96,4 @@ You can host this calculator on GitHub Pages for free in less than a minute:
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE) — you are free to use, modify, and distribute it.
+This project is licensed under the [GNU General Public License v3.0 (GPLv3)](LICENSE).
