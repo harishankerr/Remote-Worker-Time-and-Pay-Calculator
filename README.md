@@ -1,4 +1,4 @@
-# Time & Pay Calculator
+# Remote Worker Time & Pay Calculator
 
 A modern, distraction-free web calculator designed for freelancers, remote contractors, and developers to track time intervals in hours, minutes, and seconds, calculate earnings, convert across 24+ global currencies, and project full-time salaries.
 
