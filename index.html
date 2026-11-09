@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time & Pay Calculator | Freelance & Remote Work Salary Projections</title>
+    <meta name="description" content="Minimalist time calculator to add hours, minutes, and seconds, calculate total pay, convert across 24+ global currencies, and view full-time salary projections.">
+    <meta property="og:title" content="Time & Pay Calculator">
+    <meta property="og:description" content="Track time intervals in hours, minutes, and seconds, convert across 24+ currencies, and project salaries.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="page-wrapper">
+        <div class="app-layout">
+            
+            <!-- Left / Main Column: Time & Pay Calculator -->
+            <div class="calculator-card">
+                <header class="app-header">
+                    <h1>Time & Pay Calculator</h1>
+                    <p>Track time intervals, convert currencies, and calculate project earnings.</p>
+                </header>
+
+                <!-- Settings / Rates -->
+                <section class="config-grid">
+                    <div class="field-group">
+                        <label for="payRate">Hourly Pay Rate (USD)</label>
+                        <div class="input-affix-wrapper">
+                            <span class="affix prefix">$</span>
+                            <input type="number" id="payRate" value="15" min="0" step="any" placeholder="15.00">
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="currencySelect">Target Currency</label>
+                        <div class="select-wrapper">
+                            <select id="currencySelect" aria-label="Target Currency">
+                                <!-- Options populated by script -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field-group config-full">
+                        <label for="exchangeRate">
+                            <span>USD to <span id="currentCurrencyCode">INR</span> Rate</span>
+                            <span id="rateStatus" class="rate-badge">Live Rate</span>
+                        </label>
+                        <div class="input-affix-wrapper">
+                            <span class="affix prefix" id="currencySymbolPrefix">₹</span>
+                            <input type="number" id="exchangeRate" value="86.80" min="0" step="any" placeholder="Exchange rate">
+                        </div>
+                    </div>
+
+                    <div class="rates-bar config-full">
+                        <div class="rates-actions-wrap">
+                            <button type="button" id="saveInfoBtn" class="btn btn-sm btn-outline">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Save Info
+                            </button>
+                            <span id="saveStatusMsg" class="save-status-msg"></span>
+                        </div>
+                        <button type="button" id="resetDefaultsBtn" class="btn-text-subtle" style="display: none;">
+                            Reset to default
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Time Entries -->
+                <section class="entries-section">
+                    <div class="entries-header">
+                        <span class="col-num">#</span>
+                        <span class="col-field">Hours</span>
+                        <span class="col-field">Minutes</span>
+                        <span class="col-field">Seconds</span>
+                        <span class="col-action" title="Delete entry"></span>
+                    </div>
+
+                    <div class="entries-list" id="timeEntries">
+                        <!-- Dynamic Rows Injected Here -->
+                    </div>
+
+                    <div class="entries-actions">
+                        <button type="button" id="addEntryBtn" class="btn btn-primary">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Time Entry
+                        </button>
+                        <button type="button" id="resetBtn" class="btn btn-outline" title="Clear all time inputs">
+                            Reset All
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Results Summary -->
+                <section class="summary-section">
+                    <div class="summary-card">
+                        <div class="summary-label">Total Time Tracked</div>
+                        <div class="summary-value" id="totalTime">00h 00m 00s</div>
+                        <div class="summary-sub" id="totalDecimalHours">0.00 decimal hours</div>
+                    </div>
+
+                    <div class="summary-row">
+                        <div class="summary-card highlight-card">
+                            <div class="summary-label">Total Pay (USD)</div>
+                            <div class="summary-value" id="totalPay">$0.00</div>
+                            <div class="summary-sub" id="usdPaySub">at $15.00 / hr</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Total Pay (<span id="summaryCurrencyCode">INR</span>)</div>
+                            <div class="summary-value" id="totalPayTarget">₹0.00</div>
+                            <div class="summary-sub" id="targetPaySub">at ₹86.80 / USD</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column / Sidebar: Projections based on 8h work day -->
+            <aside class="sidebar-card">
+                <div class="sidebar-header">
+                    <h2>Salary Projections</h2>
+                    <p class="sidebar-subtitle">Approximate earnings based on standard 8h work days.</p>
+                </div>
+
+                <!-- Mode Toggle (Unadjusted vs Adjusted) -->
+                <div class="projection-toggle-group" role="tablist">
+                    <button type="button" id="btnModeUnadjusted" class="toggle-btn active" role="tab" aria-selected="true">
+                        Standard
+                    </button>
+                    <button type="button" id="btnModeAdjusted" class="toggle-btn" role="tab" aria-selected="false">
+                        With Holidays &amp; Vacation
+                    </button>
+                </div>
+
+                <!-- Projections Table -->
+                <div class="projections-table-wrapper">
+                    <table class="projections-table">
+                        <thead>
+                            <tr>
+                                <th class="th-period">Period</th>
+                                <th class="th-usd">USD ($)</th>
+                                <th class="th-target" id="thTargetCurrency">INR (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectionsTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footnote / Assumptions -->
+                <div class="assumptions-note" id="assumptionsNote">
+                    Assumes 40 hrs/week • 52 weeks (2,080 hrs/year).
+                </div>
+
+                <!-- Collapsible Custom Schedule Settings -->
+                <details class="custom-schedule-details">
+                    <summary>Customize schedule &amp; days off</summary>
+                    <div class="schedule-inputs-grid">
+                        <div class="mini-field">
+                            <label for="hoursPerDay">Hours / Day</label>
+                            <input type="number" id="hoursPerDay" value="8" min="1" max="24" step="0.5">
+                        </div>
+                        <div class="mini-field">
+                            <label for="daysPerWeek">Days / Week</label>
+                            <input type="number" id="daysPerWeek" value="5" min="1" max="7">
+                        </div>
+                        <div class="mini-field">
+                            <label for="holidaysPerYear">Holidays / Yr</label>
+                            <input type="number" id="holidaysPerYear" value="10" min="0" max="100">
+                        </div>
+                        <div class="mini-field">
+                            <label for="vacationDaysPerYear">Vacation Days</label>
+                            <input type="number" id="vacationDaysPerYear" value="15" min="0" max="100">
+                        </div>
+                    </div>
+                </details>
+            </aside>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
